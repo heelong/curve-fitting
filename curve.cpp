@@ -1,5 +1,5 @@
 #include "curve.h"
-bool polynomial_curve_fit(std::vector<cv::Point>& key_point, int n, cv::Mat& A)
+bool polynomial_curve_fit(std::vector<cv::Point2d>& key_point, int n, cv::Mat& A)
 {
 	//Number of key points
 	int N = key_point.size();
