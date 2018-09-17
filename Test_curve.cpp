@@ -2,7 +2,7 @@
 #include "cv.h"
 #include <time.h>
 #include <windows.h>
-void main()
+void curve()
 {
 	for (int k = 0; k < 1000; k++)
 	{
@@ -79,4 +79,65 @@ void main()
 	cv::waitKey(0);
 	return;
 
+}
+
+void main()
+{
+	clock_t time1, time2;
+	int size_ = 1000000;
+	double *max_z = new double[size_];
+	double *min_z = new double[size_];
+	
+	double a = 0, b = 100;
+	while (1)
+	{
+		memset(max_z, -100, sizeof(double)*size_);
+		memset(min_z, 2000, sizeof(double)*size_);
+		time1 = clock();
+		srand((int)time(0));
+		int i = 0;
+		//for (int j = 0; j < 100; j++)
+		{
+			for (i = 0; i <size_; i += 6)
+			{
+				double z = ((double)rand() / RAND_MAX)*(b - a) + a;
+				if (max_z[i] < z)
+					max_z[i] = z;
+				if (max_z[i + 1] < z)
+					max_z[i + 1] = z;
+				if (max_z[i + 2] < z)
+					max_z[i + 2] = z;
+				if (max_z[i + 3] < z)
+					max_z[i + 3] = z;
+				if (max_z[i + 4] < z)
+					max_z[i + 4] = z;
+				if (max_z[i + 5] < z)
+					max_z[i + 5] = z;
+				if (min_z[i] > z)
+					min_z[i] = z;
+				if (min_z[i + 1] > z)
+					min_z[i + 1] = z;
+				if (min_z[i + 2] > z)
+					min_z[i + 2] = z;
+				if (min_z[i + 3] > z)
+					min_z[i + 3] = z;
+				if (min_z[i + 4] > z)
+					min_z[i + 4] = z;
+				if (min_z[i + 5] > z)
+					min_z[i + 5] = z;
+			}
+		}
+		for (; i < size_;++i)
+		{
+			double z = ((double)rand() / RAND_MAX)*(b - a) + a;
+			if (max_z[i] < z)
+				max_z[i] = z;
+			if (min_z[i] > z)
+				min_z[i] = z;
+		}
+		time2 = clock();
+		cout << "Time :" << (double)(time2 - time1) / CLOCKS_PER_SEC*1000.0 << "ms" << endl;
+	}
+	delete[]max_z;
+	delete[]min_z;
 }
