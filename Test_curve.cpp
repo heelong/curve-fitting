@@ -4,6 +4,9 @@
 #include <windows.h>
 #include"opencv2/opencv.hpp"
 #include <iostream>
+#include <fstream>
+#include <iostream>
+#include <sstream>
 using namespace cv;
 using namespace std;
 void curveFit()
@@ -127,7 +130,7 @@ void PerformanceTesting()
 	cv::waitKey(0);
 }
 
-int main(int argc, char** argv[])
+int minAreaRectTest()
 {
 	Mat img(500, 500, CV_8UC3);
 	RNG rng = theRNG();//随机数类
@@ -169,6 +172,55 @@ int main(int argc, char** argv[])
 		//if (key == 27 || key == 'q' || key == 'Q')
 		//	break;
 
+	}
+	return 0;
+}
+int main(int argc, char** argv[])
+{
+	Mat img(500, 500, CV_8UC3);
+
+	std::string in_file_name_ = "D:\\workspace\\baseline-log\\obstacleTracker\\68_Radar.txt";
+	std::ifstream in_file_(in_file_name_.c_str(), std::ifstream::in);
+
+	vector<Point2f>points; points.reserve(1000);
+	std::string line_;
+	int mark[100]={-1};
+	int i;
+	while (getline(in_file_, line_)) {
+		std::istringstream iss(line_);
+		Point2d pt; 
+		iss >> pt.x; iss >> pt.y; iss >> i;
+		pt.x += 250.0; pt.y += 250.0;
+		points.push_back(pt);
+		mark[i]++;
+	}
+	int count = 0;
+	for (int j = 1; j <= i;j++)
+	{
+		vector<Point>points1;
+		for (int k = 0; k < mark[j];k++)
+		{
+			
+			points1.push_back(points[count+k]);
+		}
+		count += mark[j];
+		RotatedRect box = minAreaRect(Mat(points));//点集的最小外接旋转矩形
+		Point2f tr[4], center;
+		float radius = 0;
+		box.points(tr);
+		minEnclosingCircle(Mat(points), center, radius);//点集的最小外接圆
+		img = Scalar::all(0);
+		for (int ic = 0; ic < count; ic++)
+		{
+			circle(img, points[ic], 3, Scalar(0, 0, 255), CV_FILLED, CV_AA);
+		}
+		for (int ic = 0; ic < 4; ic++)
+		{
+			line(img, tr[ic], tr[(ic + 1) % 4], Scalar(0, 255, 0), 1, CV_AA);
+		}
+		//circle(img, center, cvRound(radius), Scalar(0, 255, 255), 1, CV_AA);
+		imshow("j", img);
+		cv::waitKey(300);
 	}
 	return 0;
 }
