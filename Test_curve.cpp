@@ -2,6 +2,7 @@
 #include "cv.h"
 #include <time.h>
 #include <windows.h>
+void main()
 #include"opencv2/opencv.hpp"
 #include <iostream>
 #include <fstream>
